@@ -178,7 +178,9 @@ class SelfUpdateCommand(Command):
         base_url = self.BASE_URL
 
         try:
-            r = urlopen(base_url + "/{}/{}".format(version, checksum), context=https_context())
+            r = urlopen(
+                base_url + "/{}/{}".format(version, checksum), context=https_context()
+            )
         except HTTPError as e:
             if e.code == 404:
                 raise RuntimeError("Could not find {} file".format(checksum))
@@ -190,7 +192,9 @@ class SelfUpdateCommand(Command):
         # We get the payload from the remote host
         name = "{}.tar.gz".format(release_name)
         try:
-            r = urlopen(base_url + "/{}/{}".format(version, name), context=https_context())
+            r = urlopen(
+                base_url + "/{}/{}".format(version, name), context=https_context()
+            )
         except HTTPError as e:
             if e.code == 404:
                 raise RuntimeError("Could not find {} file".format(name))

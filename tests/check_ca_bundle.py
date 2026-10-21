@@ -4,9 +4,10 @@ Run with ``python tests/check_ca_bundle.py``. This check is offline. Supply a
 bundle path to demonstrate failure with a pre-update bundle.
 """
 
-from pathlib import Path
 import subprocess
 import sys
+
+from pathlib import Path
 
 import certifi
 
@@ -20,9 +21,17 @@ def main():
         chain = Path(__file__).parent / "chains" / (host + ".pem")
         result = subprocess.run(
             [
-                "openssl", "verify", "-no-CApath", "-no-CAstore",
-                "-CAfile", bundle, "-untrusted", str(chain),
-                "-verify_hostname", host, str(chain),
+                "openssl",
+                "verify",
+                "-no-CApath",
+                "-no-CAstore",
+                "-CAfile",
+                bundle,
+                "-untrusted",
+                str(chain),
+                "-verify_hostname",
+                host,
+                str(chain),
             ],
             capture_output=True,
             text=True,
