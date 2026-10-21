@@ -13,6 +13,8 @@ on:
 
 jobs:
   pre-commit:
+    env:
+      PIP_CONSTRAINT: ${{ github.workspace }}/.github/legacy-build-constraints.txt
     name: Linting
     runs-on: ubuntu-latest
     steps:
