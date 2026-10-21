@@ -17,6 +17,8 @@ on:
 
 jobs:
   tests:
+    env:
+      VIRTUALENV_SETUPTOOLS: "68.0.0"
     name: ${{ matrix.os }} / ${{ matrix.python-version }}
     runs-on: ${{ matrix.runner }}
     continue-on-error: ${{ matrix.experimental }}
@@ -87,13 +89,13 @@ jobs:
         shell: bash
         run: poetry install
 
-      - name: Run pytest
-        shell: bash
-        run: poetry run python -m pytest -p no:sugar -q tests/
-
       - name: Verify security contexts offline
         if: matrix.os == 'Ubuntu'
         shell: bash
         run: |
           poetry run python tests/check_tls_contexts.py
           poetry run python tests/check_ca_bundle.py
+
+      - name: Run pytest
+        shell: bash
+        run: poetry run python -m pytest -p no:sugar -q tests/
