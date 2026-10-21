@@ -33,6 +33,28 @@ from urllib.request import Request
 from urllib.request import urlopen
 
 
+def https_context():
+    """Use patched roots by default and retain explicit OpenSSL CA overrides."""
+    import certifi
+    import ssl
+
+    if tuple(int(part) for part in certifi.__version__.split(".")) < (2026, 10, 19):
+        raise RuntimeError("Install certifi>=2026.10.19 before using HTTPS")
+    return ssl.create_default_context(
+        cafile=os.environ.get("SSL_CERT_FILE") or certifi.where(),
+        capath=os.environ.get("SSL_CERT_DIR"),
+    )
+
+
+def pip_environment():
+    import certifi
+
+    https_context()  # Reject an outdated bootstrap bundle before starting pip.
+    env = os.environ.copy()
+    env.setdefault("PIP_CERT", os.environ.get("SSL_CERT_FILE") or certifi.where())
+    return env
+
+
 SHELL = os.getenv("SHELL", "")
 WINDOWS = sys.platform.startswith("win") or (sys.platform == "cli" and os.name == "nt")
 MACOS = sys.platform == "darwin"
@@ -496,6 +518,7 @@ class Installer:
                 [sys.executable, "-m", "pip", "install", "virtualenv", "-t", tmp_dir],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
+                env=pip_environment(),
             )
 
             sys.path.insert(0, tmp_dir)
@@ -562,6 +585,7 @@ class Installer:
             [str(python), "-m", "pip", "install", specification],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
+            env=pip_environment(),
         )
 
     def display_pre_message(self) -> None:
@@ -726,7 +750,7 @@ class Installer:
     def _get(self, url):
         request = Request(url, headers={"User-Agent": "Python Poetry"})
 
-        with closing(urlopen(request)) as r:
+        with closing(urlopen(request, context=https_context())) as r:
             return r.read()
 
 

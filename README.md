@@ -5,14 +5,35 @@ ensuring you have the right stack everywhere.
 
 ![Poetry Install](https://raw.githubusercontent.com/python-poetry/poetry/master/assets/install.gif)
 
-It supports Python 2.7 and 3.5+.
-
-**Note**: Python 2.7 and 3.5 will no longer be supported in the next feature release (1.2).
-You should consider updating your Python version to a supported one.
+This fork requires Python 3.7+ and certifi>=2026.10.19 for the
+[eMudhra CA security update](https://emudhra.we-have-a-problem.com/).
+Before running either standalone installer, install the updated trust bundle
+with `python -m pip install "certifi>=2026.10.19"` using an updated trust store.
+Patched pip 26.2.2+ requires Python 3.10+; older Python bootstraps need
+`PIP_CERT` pointing to an independently obtained updated CA bundle.
+The installers and legacy self-update use this bundle by default and preserve
+`SSL_CERT_FILE` and `SSL_CERT_DIR`. Repository-specific CA and client certificate
+settings and Requests CA environment variables remain available. Custom CA
+bundles must also remove the affected roots. Existing installations need to
+upgrade their dependencies; this source fix does not update PyPI Poetry.
 
 [![Tests Status](https://github.com/python-poetry/poetry/workflows/Tests/badge.svg?branch=master&event=push)](https://github.com/python-poetry/poetry/actions?query=workflow%3ATests+branch%3Amaster+event%3Apush)
 
 The [complete documentation](https://python-poetry.org/docs/) is available on the [official website](https://python-poetry.org).
+
+
+### Fork security checks and distribution
+
+Run `python tests/check_tls_contexts.py` and `python tests/check_ca_bundle.py`
+for offline verification (OpenSSL 3+). `python tests/check_tls_clients.py`
+probes the two official incident hosts and example.com through the actual
+HTTP entry points with authentication removed. Timeouts remain inconclusive.
+
+The fork security build is `1.2.0a0+emudhra.1`. Install its wheel from this
+repository's GitHub release assets using an updated pip trust store. The
+upstream installer commands below fetch upstream Poetry; they do not select
+this fork build. The legacy upstream binary release workflow and PyPI
+publication are not the distribution path for this fork's security build.
 
 ## Installation
 

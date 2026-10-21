@@ -65,6 +65,19 @@ try:
 except NameError:
     u = str
 
+def https_context():
+    """Use patched roots by default and retain explicit OpenSSL CA overrides."""
+    import certifi
+    import ssl
+
+    if tuple(int(part) for part in certifi.__version__.split(".")) < (2026, 10, 19):
+        raise RuntimeError("Install certifi>=2026.10.19 before using HTTPS")
+    return ssl.create_default_context(
+        cafile=os.environ.get("SSL_CERT_FILE") or certifi.where(),
+        capath=os.environ.get("SSL_CERT_DIR"),
+    )
+
+
 SHELL = os.getenv("SHELL", "")
 WINDOWS = sys.platform.startswith("win") or (sys.platform == "cli" and os.name == "nt")
 
@@ -577,7 +590,7 @@ class Installer:
         checksum = "poetry-{}-{}.sha256sum".format(version, platform)
 
         try:
-            r = urlopen(url + "{}".format(checksum))
+            r = urlopen(url + "{}".format(checksum), context=https_context())
         except HTTPError as e:
             if e.code == 404:
                 raise RuntimeError("Could not find {} file".format(checksum))
@@ -587,7 +600,7 @@ class Installer:
         checksum = r.read().decode()
 
         try:
-            r = urlopen(url + "{}".format(name))
+            r = urlopen(url + "{}".format(name), context=https_context())
         except HTTPError as e:
             if e.code == 404:
                 raise RuntimeError("Could not find {} file".format(name))
@@ -996,7 +1009,7 @@ class Installer:
     def _get(self, url):
         request = Request(url, headers={"User-Agent": "Python Poetry"})
 
-        with closing(urlopen(request)) as r:
+        with closing(urlopen(request, context=https_context())) as r:
             return r.read()
 
 
@@ -1057,7 +1070,7 @@ def main():
 
     if args.file is None:
         try:
-            urlopen(Installer.REPOSITORY_URL)
+            urlopen(Installer.REPOSITORY_URL, context=https_context())
         except HTTPError as e:
             if e.code == 404:
                 base_url = Installer.FALLBACK_BASE_URL

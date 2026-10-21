@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poetry"
-version = "1.2.0a0"
+version = "1.2.0a0+emudhra.1"
 description = "Python dependency management and packaging made easy."
 authors = [
     "Sébastien Eustace <sebastien@eustace.io>"
@@ -25,14 +25,17 @@ generate-setup-file = false
 
 # Requirements
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 
-poetry-core = { git = "https://github.com/python-poetry/poetry-core.git", branch = "master"}
+poetry-core = { git = "https://github.com/python-poetry/poetry-core.git", rev = "c11cb9a6ebdda53d45dae78b45f6f73f5368e793"}
 cleo = "^1.0.0a1"
 crashtest = "^0.3.0"
 requests = "^2.18"
+certifi = ">=2026.10.19"
 cachy = "^0.3.0"
 requests-toolbelt = "^0.9.1"
+# The existing toolbelt and uploader use urllib3 1.x APIs.
+urllib3 = ">=1.25.10,<2"
 cachecontrol = { version = "^0.12.4", extras = ["filecache"] }
 pkginfo = "^1.5"
 html5lib = "^1.0"

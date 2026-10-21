@@ -60,11 +60,11 @@ msgpack = ["msgpack-python (>=0.5,<0.6)"]
 
 [[package]]
 name = "certifi"
-version = "2020.12.5"
+version = "2026.10.19"
 description = "Python package for providing Mozilla's CA Bundle."
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 
 [[package]]
 name = "cffi"
@@ -404,7 +404,7 @@ importlib-metadata = {version = "^1.7.0", markers = "python_version >= \"3.5\" a
 [package.source]
 type = "git"
 url = "https://github.com/python-poetry/poetry-core.git"
-reference = "master"
+reference = "c11cb9a6ebdda53d45dae78b45f6f73f5368e793"
 resolved_reference = "c11cb9a6ebdda53d45dae78b45f6f73f5368e793"
 
 [[package]]
@@ -713,8 +713,8 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.6"
-content-hash = "8442060c68d80744b05aac3a07818a1e04e457c05b0e481d717cb44721009566"
+python-versions = "^3.7"
+content-hash = "ac2da24f6ab320f6b14cba84168196bb20051630cac63c98c6ff2a1d6bbf7e33"
 
 [metadata.files]
 appdirs = [
@@ -738,8 +738,8 @@ cachy = [
     {file = "cachy-0.3.0.tar.gz", hash = "sha256:186581f4ceb42a0bbe040c407da73c14092379b1e4c0e327fdb72ae4a9b269b1"},
 ]
 certifi = [
-    {file = "certifi-2020.12.5-py2.py3-none-any.whl", hash = "sha256:719a74fb9e33b9bd44cc7f3a8d94bc35e4049deebe19ba7d8e108280cfd59830"},
-    {file = "certifi-2020.12.5.tar.gz", hash = "sha256:1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c"},
+    {file = "certifi-2026.10.19-py3-none-any.whl", hash = "sha256:42d35340cc5b9ba78e818ddbff0c5b1c2b779de448a340fd1b989f5fa8670e1b"},
+    {file = "certifi-2026.10.19.tar.gz", hash = "sha256:035c1e85572b141bf1c3a3eff0e33a8eb74917522f2559075ff8d2fea780a1ae"},
 ]
 cffi = [
     {file = "cffi-1.14.5-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:bb89f306e5da99f4d922728ddcd6f7fcebb3241fc40edebcb7284d7514741991"},

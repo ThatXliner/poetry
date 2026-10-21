@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         os: [Ubuntu, MacOS, Windows]
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9]
         experimental: [false]
         include:
           - os: Ubuntu
@@ -45,7 +45,9 @@ jobs:
 
       - name: Bootstrap poetry
         shell: bash
-        run: python install-poetry.py -y
+        run: |
+          python -m pip install "certifi>=2026.10.19"
+          python install-poetry.py -y
 
       - name: Update PATH
         if: ${{ matrix.os != 'Windows' }}
