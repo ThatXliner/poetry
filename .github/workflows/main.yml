@@ -17,17 +17,27 @@ on:
 
 jobs:
   tests:
+    env:
+      VIRTUALENV_SETUPTOOLS: "68.0.0"
     name: ${{ matrix.os }} / ${{ matrix.python-version }}
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.runner }}
     continue-on-error: ${{ matrix.experimental }}
     strategy:
+      max-parallel: 2
       matrix:
         os: [Ubuntu, MacOS, Windows]
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9]
         experimental: [false]
         include:
           - os: Ubuntu
+            runner: ubuntu-22.04
+          - os: MacOS
+            runner: macos-15-intel
+          - os: Windows
+            runner: windows-2022
+          - os: Ubuntu
             python-version: "3.10.0-alpha - 3.10.0"
+            runner: ubuntu-22.04
             experimental: true
       fail-fast: false
     steps:
@@ -45,7 +55,9 @@ jobs:
 
       - name: Bootstrap poetry
         shell: bash
-        run: python install-poetry.py -y
+        run: |
+          python -m pip install "certifi>=2026.10.19"
+          python install-poetry.py --version 1.1.15 -y
 
       - name: Update PATH
         if: ${{ matrix.os != 'Windows' }}
@@ -62,7 +74,7 @@ jobs:
         run: poetry config virtualenvs.in-project true
 
       - name: Set up cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: cache
         with:
           path: .venv
@@ -76,6 +88,13 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: poetry install
+
+      - name: Verify security contexts offline
+        if: matrix.os == 'Ubuntu'
+        shell: bash
+        run: |
+          poetry run python tests/check_tls_contexts.py
+          poetry run python tests/check_ca_bundle.py
 
       - name: Run pytest
         shell: bash
